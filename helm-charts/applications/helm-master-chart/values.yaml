@@ -1,0 +1,472 @@
+# Application name and namespace
+name: my-app
+namespace: default
+
+# Custom labels to add to all resources
+labels: {}
+# environment: production
+# team: backend
+# cost-center: engineering
+
+# Deployment metadata annotations (for Reloader, etc.)
+annotations: {}
+# reloader.stakater.com/auto: "true"
+# reloader.stakater.com/search: "true"
+
+# Container image configuration
+image:
+  repository: nginx
+  tag: latest
+  pullPolicy: Always
+
+# Image pull secrets for private registries
+imagePullSecrets: []
+# - name: my-registry-secret
+
+# Replica count
+replicaCount: 1
+
+# Service Account configuration
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# Pod annotations and labels
+podAnnotations: {}
+podLabels: {}
+
+# Container configuration
+containerPort: 80
+command: []
+args: []
+
+# Environment variables
+env: []
+# - name: ENV_VAR_NAME
+#   value: "value"
+# - name: SECRET_VAR
+#   valueFrom:
+#     secretKeyRef:
+#       name: my-secret
+#       key: password
+
+# Environment variables from ConfigMaps (configMapRef)
+# ConfigMaps are deployed from configuration repo
+# List ConfigMap names to inject all keys as env vars
+envFromConfigMaps: []
+# - connect-global-config
+# - connect-auth-config
+
+# Environment variables from Secrets (secretRef)
+# Secrets are managed in Vault
+# List Secret names to inject all keys as env vars
+envFromSecrets: []
+# - connect-shared-secrets
+# - connect-auth-secrets
+
+# Environment variables from ConfigMaps or Secrets (legacy format)
+envFrom: []
+# - configMapRef:
+#     name: my-configmap
+# - secretRef:
+#     name: my-secret
+
+# Resource limits and requests
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Liveness probe configuration
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+# Readiness probe configuration
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /ready
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+  successThreshold: 1
+
+# Startup probe configuration (for slow-starting containers)
+startupProbe:
+  enabled: false
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+  successThreshold: 1
+
+# Service configuration
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+  annotations: {}
+  # Additional ports
+  additionalPorts: []
+  # - name: grpc
+  #   port: 50051
+  #   targetPort: 50051
+
+ingressRoute:
+  enabled: false
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {} # kubernetes.io/tls-acme: "true"
+  hosts:
+  - host: app.example.com
+    paths:
+    - path: /
+      pathType: Prefix
+  tls: []
+  # - secretName: app-tls
+  #   hosts:
+  #     - app.example.com
+
+  # Horizontal Pod Autoscaler configuration
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+  # Custom metrics
+  customMetrics: []
+
+# Pod Disruption Budget configuration
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+  # ConfigMap configuration
+configMap:
+  enabled: false
+  data: {}
+  # key1: value1
+  # key2: value2
+
+  # Secret configuration
+secret:
+  enabled: false
+  type: Opaque
+  data: {}
+  # key1: base64encodedvalue
+  stringData: {}
+  # key1: plaintext-value
+
+  # Volume mounts
+volumeMounts: []
+# - name: config-volume
+#   mountPath: /etc/config
+
+# Volumes
+volumes: []
+# - name: config-volume
+#   configMap:
+#     name: my-config
+# - name: secret-volume
+#   secret:
+#     secretName: my-secret
+# - name: pvc-volume
+#   persistentVolumeClaim:
+#     claimName: my-pvc
+
+# Persistent Volume Claim
+persistence:
+  enabled: false
+  storageClass: ""
+  accessModes:
+  - ReadWriteOnce
+  size: 1Gi
+  annotations: {}
+  existingClaim: ""
+
+# Init containers
+initContainers: []
+# - name: init-myservice
+#   image: busybox:1.28
+#   command: ['sh', '-c', 'echo init']
+
+# Sidecar containers
+sidecarContainers: []
+# - name: sidecar
+#   image: nginx
+#   ports:
+#     - containerPort: 8080
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity rules
+affinity: {}
+
+# Pod security context
+podSecurityContext: {} # fsGroup: 2000
+
+# Container security context
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #     - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Termination grace period
+terminationGracePeriodSeconds: 30
+
+# Update strategy for Deployment
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+
+# Network Policy configuration
+networkPolicy:
+  enabled: false
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress: []
+  # - from:
+  #     - namespaceSelector:
+  #         matchLabels:
+  #           name: allowed-namespace
+  #     - podSelector:
+  #         matchLabels:
+  #           app: allowed-app
+  egress: []
+  # - to:
+  #     - ipBlock:
+  #         cidr: 10.0.0.0/8
+
+  # ServiceMonitor for Prometheus
+serviceMonitor:
+  enabled: false
+  interval: 30s
+  path: /metrics
+  port: http
+  additionalLabels: {}
+
+# Job configuration (single job - legacy)
+job:
+  enabled: false
+  annotations: {}
+  podAnnotations: {}
+  podLabels: {}
+  image: {}
+  # image:
+  #   repository: my-seed-image
+  #   tag: latest
+  command: []
+  # - /bin/sh
+  # - -c
+  # - echo "Hello from Job"
+  args: []
+  env: []
+  envFromConfigMaps: []
+  # - my-configmap
+  envFromSecrets: []
+  # - my-secret
+  envFrom: []
+  resources: {}
+  volumeMounts: []
+  volumes: []
+  initContainers: []
+  restartPolicy: Never
+  backoffLimit: 6
+  ttlSecondsAfterFinished: 100
+  activeDeadlineSeconds: null
+  parallelism: 1
+  completions: 1
+
+# Multiple Jobs configuration
+# Each job is defined as a named entry in the map
+jobs: {}
+  # db-migrate:
+  #   enabled: true
+  #   image:
+  #     repository: my-app
+  #     tag: latest
+  #   command:
+  #     - /bin/sh
+  #     - -c
+  #     - npm run migrate
+  #   env:
+  #     - name: DATABASE_URL
+  #       valueFrom:
+  #         secretKeyRef:
+  #           name: db-secrets
+  #           key: url
+  #   backoffLimit: 3
+  #   ttlSecondsAfterFinished: 100
+  #
+  # db-seed:
+  #   enabled: true
+  #   image:
+  #     repository: my-app
+  #     tag: latest
+  #   command:
+  #     - /bin/sh
+  #     - -c
+  #     - npm run seed
+  #   backoffLimit: 1
+
+# CronJob configuration (single cronjob - legacy)
+cronJob:
+  enabled: false
+  schedule: "0 * * * *"
+  timeZone: ""
+  annotations: {}
+  podAnnotations: {}
+  podLabels: {}
+  command: []
+  image: {}
+  # image:
+  #   repository: my-seed-image
+  #   tag: latest
+  # - /bin/sh
+  # - -c
+  # - echo "Hello from CronJob"
+  args: []
+  env: []
+  envFromConfigMaps: []
+  # - my-configmap
+  envFromSecrets: []
+  # - my-secret
+  envFrom: []
+  resources: {}
+  volumeMounts: []
+  volumes: []
+  initContainers: []
+  restartPolicy: Never
+  concurrencyPolicy: Forbid
+  suspend: false
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  startingDeadlineSeconds: null
+  backoffLimit: 6
+  ttlSecondsAfterFinished: 100
+  activeDeadlineSeconds: null
+
+# Multiple CronJobs configuration
+# Each cronjob is defined as a named entry in the map
+cronJobs: {}
+  # invitation-reminder:
+  #   enabled: true
+  #   schedule: "0 9 * * *"  # Daily at 9 AM
+  #   timeZone: "UTC"
+  #   image:
+  #     repository: my-app-cron
+  #     tag: latest
+  #   env:
+  #     - name: CRON_JOB_TYPE
+  #       value: invitation
+  #     - name: SERVICE_URL
+  #       value: http://my-service:3000
+  #   concurrencyPolicy: Forbid
+  #   successfulJobsHistoryLimit: 3
+  #   failedJobsHistoryLimit: 1
+  #
+  # hosting-reminder:
+  #   enabled: true
+  #   schedule: "0 8 * * *"  # Daily at 8 AM
+  #   timeZone: "UTC"
+  #   image:
+  #     repository: my-app-cron
+  #     tag: latest
+  #   env:
+  #     - name: CRON_JOB_TYPE
+  #       value: hosting
+  #     - name: SERVICE_URL
+  #       value: http://my-service:3000
+  #   concurrencyPolicy: Forbid
+  #
+  # cleanup:
+  #   enabled: true
+  #   schedule: "0 2 * * 0"  # Weekly on Sunday at 2 AM
+  #   image:
+  #     repository: my-cleanup-job
+  #     tag: latest
+  #   command:
+  #     - /bin/sh
+  #     - -c
+  #     - ./cleanup.sh
+  #   resources:
+  #     limits:
+  #       cpu: 200m
+  #       memory: 256Mi
+
+# ExternalSecret for application secrets from Vault
+externalSecret:
+  enabled: false
+  name: ""
+  targetSecretName: ""
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: vault-bhairs
+    kind: SecretStore
+  # Use dataFrom to extract all keys from a Vault path
+  dataFrom: []
+  # - key: bhairs-backend
+  # Use data for specific key mappings
+  data: []
+  # - secretKey: DB_PASSWORD
+  #   remoteRef:
+  #     key: bhairs-backend
+  #     property: DB_PASSWORD
+
+  # ECR External Secret for image pull from private ECR registry
+ecrExternalSecret:
+  enabled: false
+  refreshInterval: "1h"
+  cronSchedule: "0 */10 * * *"
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  remoteRef:
+    key: ""
+    accessKeyIdProperty: ""
+    secretAccessKeyProperty: ""
+  ecrRegistry: ""
+  ecrRegion: ""
+
+# Extra Kubernetes manifests to deploy
+extraManifests: []
+
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: extra-configmap
+#   data:
+#     key: value

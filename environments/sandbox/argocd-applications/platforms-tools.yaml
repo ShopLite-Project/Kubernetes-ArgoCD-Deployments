@@ -1,0 +1,79 @@
+global:
+  repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+  targetRevision: main
+  destinationServer: "https://kubernetes.default.svc"
+  argocdNamespace: argocd
+  project: platform-tools
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - ApplyOutOfSyncOnly=true
+
+applications:
+  - name: cert-manager-sandbox
+    enabled: false
+    namespace: cert-manager
+    syncWave: "1"
+    sources:
+      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://charts.jetstack.io"
+        chart: cert-manager
+        targetRevision: "v1.18.2"
+        helm:
+          releaseName: cert-manager
+          valueFiles:
+            - $values/environments/sandbox/platforms-tools/cert-manager/values.yaml
+
+  - name: external-dns-sandbox
+    enabled: false
+    namespace: external-dns
+    syncWave: "2"
+    sources:
+      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://kubernetes-sigs.github.io/external-dns"
+        chart: external-dns
+        targetRevision: "1.15.0"
+        helm:
+          releaseName: external-dns
+          valueFiles:
+            - $values/environments/sandbox/platforms-tools/external-dns/values.yaml
+
+  - name: traefik-sandbox
+    enabled: false
+    namespace: traefik
+    syncWave: "3"
+    sources:
+      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://traefik.github.io/charts"
+        chart: traefik
+        targetRevision: "34.3.0"
+        helm:
+          releaseName: traefik
+          valueFiles:
+            - $values/environments/sandbox/platforms-tools/traefik/values.yaml
+
+  - name: argocd-sandbox
+    enabled: false
+    namespace: argocd
+    syncWave: "4"
+    sources:
+      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://argoproj.github.io/argo-helm"
+        chart: argo-cd
+        targetRevision: "7.8.2"
+        helm:
+          releaseName: argocd
+          valueFiles:
+            - $values/environments/sandbox/platforms-tools/argocd/values.yaml

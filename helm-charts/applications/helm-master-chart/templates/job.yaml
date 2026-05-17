@@ -1,0 +1,248 @@
+{{/*
+  Support for single job (legacy) and multiple jobs
+*/}}
+
+{{- /* Legacy single job support */ -}}
+{{- if .Values.job.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.name }}-job
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+  {{- with .Values.job.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.job.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+  {{- end }}
+  {{- if .Values.job.backoffLimit }}
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  {{- end }}
+  {{- if .Values.job.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.job.activeDeadlineSeconds }}
+  {{- end }}
+  {{- if .Values.job.parallelism }}
+  parallelism: {{ .Values.job.parallelism }}
+  {{- end }}
+  {{- if .Values.job.completions }}
+  completions: {{ .Values.job.completions }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.job.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "master-chart.selectorLabels" . | nindent 8 }}
+        {{- with .Values.job.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.name }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: {{ .Values.job.restartPolicy | default "Never" }}
+      {{- with .Values.job.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.name | default .Chart.Name }}-job
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.job.image }}
+          image: {{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default "latest" }}
+          imagePullPolicy: {{ .Values.job.image.pullPolicy | default .Values.image.pullPolicy }}
+          {{- else }}
+          image: {{ include "master-chart.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- end }}
+          {{- with .Values.job.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.job.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- $configMaps := .Values.job.envFromConfigMaps | default .Values.envFromConfigMaps }}
+          {{- $secrets := .Values.job.envFromSecrets | default .Values.envFromSecrets }}
+          {{- $envFrom := .Values.job.envFrom | default .Values.envFrom }}
+          {{- if or $configMaps $secrets $envFrom }}
+          envFrom:
+            {{- range $configMaps }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- range $secrets }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with $envFrom }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.job.env | default .Values.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.job.resources | default .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.job.volumeMounts | default .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.job.volumes | default .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+
+{{- /* Multiple jobs support */ -}}
+{{- range $jobName, $job := .Values.jobs }}
+{{- if $job.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $.Values.name }}-{{ $jobName }}
+  namespace: {{ $.Values.namespace | default "default" }}
+  labels:
+    {{- include "master-chart.labels" $ | nindent 4 }}
+    app.kubernetes.io/job: {{ $jobName }}
+  {{- with $job.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if $job.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ $job.ttlSecondsAfterFinished }}
+  {{- end }}
+  backoffLimit: {{ $job.backoffLimit | default 6 }}
+  {{- if $job.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ $job.activeDeadlineSeconds }}
+  {{- end }}
+  parallelism: {{ $job.parallelism | default 1 }}
+  completions: {{ $job.completions | default 1 }}
+  template:
+    metadata:
+      {{- with $job.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "master-chart.selectorLabels" $ | nindent 8 }}
+        app.kubernetes.io/job: {{ $jobName }}
+        {{- with $job.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ $.Values.name }}
+      {{- with $.Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: {{ $job.restartPolicy | default "Never" }}
+      {{- with $job.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ $jobName }}
+          {{- with $.Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if $job.image }}
+          image: {{ $job.image.repository }}:{{ $job.image.tag | default "latest" }}
+          imagePullPolicy: {{ $job.image.pullPolicy | default $.Values.image.pullPolicy }}
+          {{- else }}
+          image: {{ include "master-chart.image" $ }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          {{- end }}
+          {{- with $job.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $job.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- $configMaps := $job.envFromConfigMaps | default $.Values.envFromConfigMaps }}
+          {{- $secrets := $job.envFromSecrets | default $.Values.envFromSecrets }}
+          {{- $envFrom := $job.envFrom | default $.Values.envFrom }}
+          {{- if or $configMaps $secrets $envFrom }}
+          envFrom:
+            {{- range $configMaps }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- range $secrets }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with $envFrom }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- with $job.env | default $.Values.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $job.resources | default $.Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $job.volumeMounts | default $.Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with $job.volumes | default $.Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $job.nodeSelector | default $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $job.affinity | default $.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $job.tolerations | default $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}

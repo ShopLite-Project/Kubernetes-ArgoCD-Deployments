@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: platform-tools
+      namespace: argocd
+    spec:
+      description: Core platform tools for the sandbox environment
+      sourceRepos:
+        - "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+        - "https://argoproj.github.io/argo-helm"
+        - "https://charts.jetstack.io"
+        - "https://kubernetes-sigs.github.io/external-dns"
+        - "https://traefik.github.io/charts"
+      destinations:
+        - namespace: argocd
+          server: https://kubernetes.default.svc
+        - namespace: cert-manager
+          server: https://kubernetes.default.svc
+        - namespace: external-dns
+          server: https://kubernetes.default.svc
+        - namespace: traefik
+          server: https://kubernetes.default.svc
+      clusterResourceWhitelist:
+        - group: '*'
+          kind: '*'
+  - apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: shoplite-apps
+      namespace: argocd
+    spec:
+      description: ShopLite application components for the sandbox environment
+      sourceRepos:
+        - "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      destinations:
+        - namespace: shoplite-sandbox
+          server: https://kubernetes.default.svc
+      clusterResourceWhitelist:
+        - group: '*'
+          kind: '*'

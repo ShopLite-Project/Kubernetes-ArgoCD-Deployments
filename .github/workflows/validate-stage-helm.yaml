@@ -1,0 +1,97 @@
+name: Validate Stage Helm
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-stage-helm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.15.4
+
+      - name: Lint reusable application chart
+        run: |
+          helm lint helm-charts/applications/helm-master-chart
+
+      - name: Lint ShopLite configmap chart
+        run: |
+          helm lint helm-charts/applications/configmaps/shoplite/shoplite-stage-cm
+
+      - name: Lint ArgoCD application chart
+        run: |
+          helm lint helm-charts/platforms-tools/argocd-application
+
+      - name: Lint ArgoCD project chart
+        run: |
+          helm lint helm-charts/platforms-tools/argocd-project
+
+      - name: Render ShopLite stage services
+        run: |
+          set -euo pipefail
+          : > /tmp/shoplite-stage-rendered.yaml
+          for service in \
+            shoplite-frontend \
+            shoplite-product-service \
+            shoplite-order-service \
+            shoplite-inventory-service \
+            shoplite-notification-service
+          do
+            helm template "$service" helm-charts/applications/helm-master-chart \
+              --namespace shoplite-stage \
+              -f "environments/stage/applications/shoplite/$service/values.yaml" \
+              >> /tmp/shoplite-stage-rendered.yaml
+          done
+
+      - name: Render ShopLite stage configmaps
+        run: |
+          helm template shoplite-stage-configmaps helm-charts/applications/configmaps/shoplite/shoplite-stage-cm \
+            > /tmp/shoplite-stage-configmaps.yaml
+
+      - name: Render ShopLite ArgoCD applications
+        run: |
+          helm template shoplite-stage-apps helm-charts/platforms-tools/argocd-application \
+            -f environments/stage/argocd-applications/shoplite-stage.yaml \
+            > /tmp/shoplite-stage-argocd-applications.yaml
+
+      - name: Render ShopLite configmap ArgoCD applications
+        run: |
+          helm template shoplite-stage-cm-apps helm-charts/platforms-tools/argocd-application \
+            -f environments/stage/argocd-applications/shoplite-stage-cm.yaml \
+            > /tmp/shoplite-stage-cm-argocd-applications.yaml
+
+      - name: Render platform-tools ArgoCD applications
+        run: |
+          helm template platform-tools-stage helm-charts/platforms-tools/argocd-application \
+            -f environments/stage/argocd-applications/platforms-tools.yaml \
+            > /tmp/platform-tools-stage-argocd-applications.yaml
+
+      - name: Render ArgoCD projects
+        run: |
+          helm template stage-projects helm-charts/platforms-tools/argocd-project \
+            -f environments/stage/argocd-project/projects.yaml \
+            > /tmp/stage-argocd-projects.yaml
+
+      - name: Upload rendered manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage-rendered-manifests
+          path: |
+            /tmp/shoplite-stage-rendered.yaml
+            /tmp/shoplite-stage-configmaps.yaml
+            /tmp/shoplite-stage-argocd-applications.yaml
+            /tmp/shoplite-stage-cm-argocd-applications.yaml
+            /tmp/platform-tools-stage-argocd-applications.yaml
+            /tmp/stage-argocd-projects.yaml
+          retention-days: 7

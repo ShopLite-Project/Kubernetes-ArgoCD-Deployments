@@ -1,0 +1,21 @@
+global:
+  argocdNamespace: argocd
+
+projects: []
+# Example:
+# projects:
+#   - name: platform-tools
+#     description: Platform tools and infrastructure components
+#     sourceRepos:
+#       - "https://git.edusuc.net/WEBFORX/Plateng-deployment.git"
+#     destinations:
+#       - namespace: '*'
+#         server: https://kubernetes.default.svc
+#     clusterResourceWhitelist:
+#       - group: '*'
+#         kind: '*'
+#     namespaceResourceWhitelist:
+#       - group: '*'
+#         kind: '*'
+#     roles: []
+#     syncWindows: []

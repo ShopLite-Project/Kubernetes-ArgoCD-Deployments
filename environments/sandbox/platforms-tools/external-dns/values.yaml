@@ -1,0 +1,15 @@
+provider: azure
+
+policy: sync
+
+sources:
+  - service
+  - ingress
+
+txtOwnerId: shoplite-sandbox
+
+serviceAccount:
+  create: true
+
+domainFilters:
+  - sandbox.shoplite.local

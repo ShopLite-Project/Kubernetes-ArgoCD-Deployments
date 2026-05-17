@@ -1,0 +1,44 @@
+global:
+  repoURL: "https://git.edusuc.net/WEBFORX/Plateng-deployment.git"
+  targetRevision: develop
+  destinationServer: "https://kubernetes.default.svc"
+  argocdNamespace: argocd
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - Validate=false
+    - ApplyOutOfSyncOnly=true
+    - Replace=false
+    - SkipDryRun=true
+    - ManualSync=false
+
+applications: []
+
+# Example:
+# applications:
+#   - name: cert-manager
+#     namespace: cert-manager
+#     path: helm-charts/platforms-tools/cert-manager
+#     project: platform-tools  # optional, overrides global.project
+#     syncWave: "1"
+#     helm:
+#       releaseName: cert-manager
+#       valueFiles:
+#         - environments/stage/platforms-tools/cert-manager/values.yaml
+#       parameters:
+#         - name: installCRDs
+#           value: "true"
+#     syncPolicy:
+#       automated:
+#         prune: true
+#         selfHeal: true
+#       syncOptions:
+#         - CreateNamespace=true
+#         - ServerSideApply=true
+#     sources: []  # for multi-source applications
+#     finalizers:
+#       - resources-finalizer.argocd.argoproj.io

@@ -1,0 +1,71 @@
+name: shoplite-frontend
+namespace: shoplite-sandbox
+
+labels:
+  app: shoplite-frontend
+  application: shoplite
+  team: frontend
+  app.kubernetes.io/part-of: shoplite
+  app.kubernetes.io/instance: sandbox
+
+annotations:
+  reloader.stakater.com/auto: "true"
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/marjorieechu/shoplite-frontend
+  tag: sandbox-latest
+  pullPolicy: Always
+
+envFromConfigMaps:
+  - shoplite-global-config
+  - shoplite-sandbox-config
+  - shoplite-frontend-config
+
+containerPort: 3000
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+  successThreshold: 1
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+
+serviceAccount:
+  create: true
+
+ingress:
+  enabled: false

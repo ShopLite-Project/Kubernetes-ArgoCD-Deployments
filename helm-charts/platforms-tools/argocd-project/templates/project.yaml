@@ -1,0 +1,114 @@
+{{- if .Values.project }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .Values.project.name }}
+  namespace: {{ .Values.global.argocdNamespace }}
+  labels:
+    {{- include "argocd-project.labels" . | nindent 4 }}
+  {{- if .Values.project.annotations }}
+  annotations:
+    {{- toYaml .Values.project.annotations | nindent 4 }}
+  {{- end }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: {{ .Values.project.description | default "" }}
+  {{- if .Values.project.sourceRepos }}
+  sourceRepos:
+    {{- toYaml .Values.project.sourceRepos | nindent 4 }}
+  {{- else }}
+  sourceRepos:
+    - '*'
+  {{- end }}
+  {{- if .Values.project.destinations }}
+  destinations:
+    {{- toYaml .Values.project.destinations | nindent 4 }}
+  {{- else }}
+  destinations:
+    - namespace: '*'
+      server: '*'
+  {{- end }}
+  {{- if .Values.project.clusterResourceWhitelist }}
+  clusterResourceWhitelist:
+    {{- toYaml .Values.project.clusterResourceWhitelist | nindent 4 }}
+  {{- end }}
+  {{- if .Values.project.clusterResourceBlacklist }}
+  clusterResourceBlacklist:
+    {{- toYaml .Values.project.clusterResourceBlacklist | nindent 4 }}
+  {{- end }}
+  {{- if .Values.project.namespaceResourceWhitelist }}
+  namespaceResourceWhitelist:
+    {{- toYaml .Values.project.namespaceResourceWhitelist | nindent 4 }}
+  {{- end }}
+  {{- if .Values.project.namespaceResourceBlacklist }}
+  namespaceResourceBlacklist:
+    {{- toYaml .Values.project.namespaceResourceBlacklist | nindent 4 }}
+  {{- end }}
+  {{- if .Values.project.roles }}
+  roles:
+    {{- toYaml .Values.project.roles | nindent 4 }}
+  {{- end }}
+  {{- if .Values.project.syncWindows }}
+  syncWindows:
+    {{- toYaml .Values.project.syncWindows | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- range .Values.projects }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.global.argocdNamespace }}
+  labels:
+    {{- include "argocd-project.labels" $ | nindent 4 }}
+  {{- if .annotations }}
+  annotations:
+    {{- toYaml .annotations | nindent 4 }}
+  {{- end }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: {{ .description | default "" }}
+  {{- if .sourceRepos }}
+  sourceRepos:
+    {{- toYaml .sourceRepos | nindent 4 }}
+  {{- else }}
+  sourceRepos:
+    - '*'
+  {{- end }}
+  {{- if .destinations }}
+  destinations:
+    {{- toYaml .destinations | nindent 4 }}
+  {{- else }}
+  destinations:
+    - namespace: '*'
+      server: '*'
+  {{- end }}
+  {{- if .clusterResourceWhitelist }}
+  clusterResourceWhitelist:
+    {{- toYaml .clusterResourceWhitelist | nindent 4 }}
+  {{- end }}
+  {{- if .clusterResourceBlacklist }}
+  clusterResourceBlacklist:
+    {{- toYaml .clusterResourceBlacklist | nindent 4 }}
+  {{- end }}
+  {{- if .namespaceResourceWhitelist }}
+  namespaceResourceWhitelist:
+    {{- toYaml .namespaceResourceWhitelist | nindent 4 }}
+  {{- end }}
+  {{- if .namespaceResourceBlacklist }}
+  namespaceResourceBlacklist:
+    {{- toYaml .namespaceResourceBlacklist | nindent 4 }}
+  {{- end }}
+  {{- if .roles }}
+  roles:
+    {{- toYaml .roles | nindent 4 }}
+  {{- end }}
+  {{- if .syncWindows }}
+  syncWindows:
+    {{- toYaml .syncWindows | nindent 4 }}
+  {{- end }}
+{{- end }}

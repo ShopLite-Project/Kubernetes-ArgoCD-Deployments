@@ -1,0 +1,12 @@
+apiVersion: v2
+name: argocd-project
+description: Helm chart for ArgoCD AppProject resources
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - argocd
+  - appproject
+  - gitops
+maintainers:
+  - name: Platform Team

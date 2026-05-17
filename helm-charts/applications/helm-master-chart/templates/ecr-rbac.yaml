@@ -1,0 +1,29 @@
+{{- if .Values.ecrExternalSecret.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ecr-secret-manager-{{ .Values.name }}
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ecr-secret-manager-{{ .Values.name }}
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ecr-secret-manager-{{ .Values.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.name }}
+    namespace: {{ .Values.namespace | default "default" }}
+{{- end }}

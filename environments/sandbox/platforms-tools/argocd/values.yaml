@@ -1,0 +1,9 @@
+global:
+  domain: argocd.sandbox.shoplite.local
+
+server:
+  ingress:
+    enabled: false
+
+redis:
+  enabled: true

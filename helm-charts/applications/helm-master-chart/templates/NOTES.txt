@@ -1,0 +1,43 @@
+Congratulations! Your application has been deployed.
+
+Release Name: {{ .Release.Name }}
+Namespace: {{ .Values.namespace | default "default" }}
+
+{{- if .Values.service.enabled }}
+
+To access your application:
+
+1. Get the application URL by running:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ (first $host.paths).path }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Values.namespace | default "default" }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "master-chart.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Values.namespace | default "default" }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+  You can watch the status by running:
+  kubectl get --namespace {{ .Values.namespace | default "default" }} svc -w {{ include "master-chart.fullname" . }}
+  
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Values.namespace | default "default" }} {{ include "master-chart.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  kubectl port-forward --namespace {{ .Values.namespace | default "default" }} svc/{{ include "master-chart.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+  Then visit http://localhost:{{ .Values.service.port }}
+{{- end }}
+{{- end }}
+
+2. Get pod status:
+  kubectl get pods --namespace {{ .Values.namespace | default "default" }} -l "app.kubernetes.io/name={{ include "master-chart.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+
+3. Get logs:
+  kubectl logs --namespace {{ .Values.namespace | default "default" }} -l "app.kubernetes.io/name={{ include "master-chart.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+
+{{- if .Values.autoscaling.enabled }}
+
+Autoscaling is enabled:
+  Min Replicas: {{ .Values.autoscaling.minReplicas }}
+  Max Replicas: {{ .Values.autoscaling.maxReplicas }}
+{{- end }}

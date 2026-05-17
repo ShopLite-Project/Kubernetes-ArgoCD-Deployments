@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shoplite-product-service-config
+  namespace: shoplite-sandbox
+  labels:
+    {{- include "shoplite.labels" . | nindent 4 }}
+    component: product-service
+data:
+  SERVICE_NAME: "shoplite-product-service"
+  PORT: "3000"
+  CURRENCY: "USD"

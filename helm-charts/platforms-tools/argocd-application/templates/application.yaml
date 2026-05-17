@@ -1,0 +1,128 @@
+{{- range .Values.applications }}
+{{- if ne .enabled false }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.global.argocdNamespace }}
+  labels:
+    {{- include "argocd-application.labels" $ | nindent 4 }}
+    {{- if .labels }}
+    {{- toYaml .labels | nindent 4 }}
+    {{- end }}
+  {{- if or .syncWave .annotations }}
+  annotations:
+    {{- if .syncWave }}
+    argocd.argoproj.io/sync-wave: {{ .syncWave | quote }}
+    {{- end }}
+    {{- if .annotations }}
+    {{- toYaml .annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+  {{- if .finalizers }}
+  finalizers:
+    {{- range .finalizers }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
+spec:
+  project: {{ .project | default $.Values.global.project }}
+  destination:
+    namespace: {{ .namespace | default "default" }}
+    server: {{ .destinationServer | default $.Values.global.destinationServer }}
+  {{- if .sources }}
+  sources:
+    {{- range .sources }}
+    - repoURL: {{ .repoURL | default $.Values.global.repoURL }}
+      targetRevision: {{ .targetRevision | default $.Values.global.targetRevision | quote }}
+      {{- if .ref }}
+      ref: {{ .ref }}
+      {{- end }}
+      {{- if .path }}
+      path: {{ .path }}
+      {{- end }}
+      {{- if .chart }}
+      chart: {{ .chart }}
+      {{- end }}
+      {{- if .helm }}
+      helm:
+        {{- if .helm.releaseName }}
+        releaseName: {{ .helm.releaseName }}
+        {{- end }}
+        {{- if .helm.valueFiles }}
+        valueFiles:
+          {{- range .helm.valueFiles }}
+          - {{ . }}
+          {{- end }}
+        {{- end }}
+        {{- if .helm.parameters }}
+        parameters:
+          {{- range .helm.parameters }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
+        {{- end }}
+        {{- if .helm.values }}
+        values: |
+          {{- .helm.values | nindent 10 }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+  source:
+    repoURL: {{ .repoURL | default $.Values.global.repoURL }}
+    targetRevision: {{ .targetRevision | default $.Values.global.targetRevision }}
+    path: {{ .path }}
+    {{- if .helm }}
+    helm:
+      {{- if .helm.releaseName }}
+      releaseName: {{ .helm.releaseName }}
+      {{- end }}
+      {{- if .helm.valueFiles }}
+      valueFiles:
+        {{- range .helm.valueFiles }}
+        - {{ . }}
+        {{- end }}
+      {{- end }}
+      {{- if .helm.parameters }}
+      parameters:
+        {{- range .helm.parameters }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+      {{- end }}
+      {{- if .helm.values }}
+      values: |
+        {{- .helm.values | nindent 8 }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if or .syncPolicy $.Values.global.syncPolicy }}
+  syncPolicy:
+    {{- $syncPolicy := .syncPolicy | default $.Values.global.syncPolicy }}
+    {{- if $syncPolicy.automated }}
+    automated:
+      prune: {{ $syncPolicy.automated.prune | default true }}
+      selfHeal: {{ $syncPolicy.automated.selfHeal | default true }}
+      {{- if $syncPolicy.automated.allowEmpty }}
+      allowEmpty: {{ $syncPolicy.automated.allowEmpty }}
+      {{- end }}
+    {{- end }}
+    {{- if $syncPolicy.syncOptions }}
+    syncOptions:
+      {{- range $syncPolicy.syncOptions }}
+      - {{ . }}
+      {{- end }}
+    {{- end }}
+    {{- if $syncPolicy.retry }}
+    retry:
+      {{- toYaml $syncPolicy.retry | nindent 6 }}
+    {{- end }}
+  {{- end }}
+  {{- if .ignoreDifferences }}
+  ignoreDifferences:
+    {{- toYaml .ignoreDifferences | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

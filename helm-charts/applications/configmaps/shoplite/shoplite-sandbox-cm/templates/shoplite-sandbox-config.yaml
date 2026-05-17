@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shoplite-sandbox-config
+  namespace: shoplite-sandbox
+  labels:
+    {{- include "shoplite.labels" . | nindent 4 }}
+    scope: environment
+data:
+  PRODUCT_SERVICE_URL: "http://shoplite-product-service"
+  ORDER_SERVICE_URL: "http://shoplite-order-service"
+  INVENTORY_SERVICE_URL: "http://shoplite-inventory-service"
+  NOTIFICATION_SERVICE_URL: "http://shoplite-notification-service"
+  FRONTEND_PUBLIC_BASE_URL: "https://shoplite.sandbox.local"

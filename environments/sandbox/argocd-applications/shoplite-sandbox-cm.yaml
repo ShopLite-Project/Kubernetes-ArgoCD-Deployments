@@ -1,0 +1,23 @@
+global:
+  repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+  targetRevision: main
+  destinationServer: "https://kubernetes.default.svc"
+  argocdNamespace: argocd
+  project: shoplite-apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - ApplyOutOfSyncOnly=true
+
+applications:
+  - name: shoplite-sandbox-configmaps
+    enabled: true
+    namespace: shoplite-sandbox
+    syncWave: "0"
+    path: helm-charts/applications/configmaps/shoplite/shoplite-sandbox-cm
+    helm:
+      releaseName: shoplite-sandbox-configmaps
