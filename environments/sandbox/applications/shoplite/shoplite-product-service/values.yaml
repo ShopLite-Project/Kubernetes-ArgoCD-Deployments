@@ -14,7 +14,7 @@ annotations:
 replicaCount: 1
 
 image:
-  repository: ghcr.io/marjorieechu/shoplite-product-service
+  repository: ghcr.io/shoplite-project/shoplite-product-service
   tag: sandbox-latest
   pullPolicy: Always
 
