@@ -1,0 +1,25 @@
+cluster:
+  name: shoplite-kafka
+  namespace: kafka
+  kafkaVersion: 3.8.0
+  replicas: 1
+  listeners:
+    - name: plain
+      port: 9092
+      type: internal
+      tls: false
+  config: {}
+  storage:
+    type: ephemeral
+  zookeeper:
+    replicas: 1
+    storage:
+      type: ephemeral
+
+entityOperator:
+  topicOperator:
+    enabled: true
+  userOperator:
+    enabled: true
+
+topics: []

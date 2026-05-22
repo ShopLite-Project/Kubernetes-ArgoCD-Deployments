@@ -1,0 +1,26 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ include "kafka-cluster.fullname" . }}
+  namespace: {{ .Values.cluster.namespace }}
+spec:
+  kafka:
+    version: {{ .Values.cluster.kafkaVersion | quote }}
+    replicas: {{ .Values.cluster.replicas }}
+    listeners:
+      {{- toYaml .Values.cluster.listeners | nindent 6 }}
+    config:
+      {{- toYaml .Values.cluster.config | nindent 6 }}
+    storage:
+      {{- toYaml .Values.cluster.storage | nindent 6 }}
+  zookeeper:
+    replicas: {{ .Values.cluster.zookeeper.replicas }}
+    storage:
+      {{- toYaml .Values.cluster.zookeeper.storage | nindent 6 }}
+  entityOperator:
+    {{- if .Values.entityOperator.topicOperator.enabled }}
+    topicOperator: {}
+    {{- end }}
+    {{- if .Values.entityOperator.userOperator.enabled }}
+    userOperator: {}
+    {{- end }}

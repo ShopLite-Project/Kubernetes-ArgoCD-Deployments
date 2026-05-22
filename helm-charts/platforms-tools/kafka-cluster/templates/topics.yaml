@@ -1,0 +1,15 @@
+{{- range .Values.topics }}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.cluster.namespace }}
+  labels:
+    strimzi.io/cluster: {{ include "kafka-cluster.fullname" $ }}
+spec:
+  partitions: {{ .partitions }}
+  replicas: {{ .replicas }}
+  config:
+    {{- toYaml .config | nindent 4 }}
+{{- end }}

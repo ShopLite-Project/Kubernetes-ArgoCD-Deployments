@@ -131,6 +131,13 @@ The stage repo structure also includes `platforms-tools.yaml` plus stage values 
 
 These platform components are documented in the same structure for learning consistency, but they are disabled in ArgoCD by default because the current platform strategy provisions them with Terraform.
 
+Kafka can follow the same platform-tools model:
+
+- the Kafka operator belongs in `environments/<env>/platforms-tools/`
+- ArgoCD can install the operator as a platform tool
+- Kafka cluster and topic resources can be rendered from a local Helm chart after the operator exists
+- service repos should only contain Kafka client code, not Kafka cluster installation logic
+
 ## Roadmap
 
 A project progression as the reference path:
@@ -157,7 +164,7 @@ A project progression as the reference path:
 
 - PostgreSQL for persistent order data
 - Redis for caching or fast state access
-- RabbitMQ for asynchronous notification/event flow
+- Kafka for asynchronous event flow and operator-managed platform learning
 - observability stack integration
 - autoscaling, policies, and more production-like platform controls
 

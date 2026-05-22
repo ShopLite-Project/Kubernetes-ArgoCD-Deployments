@@ -77,3 +77,29 @@ applications:
           releaseName: argocd
           valueFiles:
             - $values/environments/sandbox/platforms-tools/argocd/values.yaml
+
+  - name: kafka-operator-sandbox
+    enabled: true
+    namespace: kafka
+    syncWave: "5"
+    sources:
+      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://strimzi.io/charts/"
+        chart: strimzi-kafka-operator
+        targetRevision: "0.45.0"
+        helm:
+          releaseName: strimzi-kafka-operator
+          valueFiles:
+            - $values/environments/sandbox/platforms-tools/kafka-operator/values.yaml
+
+  - name: kafka-cluster-sandbox
+    enabled: true
+    namespace: kafka
+    syncWave: "6"
+    path: helm-charts/platforms-tools/kafka-cluster
+    helm:
+      releaseName: kafka-cluster
+      valueFiles:
+        - environments/sandbox/platforms-tools/kafka-cluster/values.yaml
