@@ -1,0 +1,94 @@
+global:
+  repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+  targetRevision: main
+  destinationServer: "https://kubernetes.default.svc"
+  argocdNamespace: argocd
+  project: shoplite-apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - ApplyOutOfSyncOnly=true
+      - Replace=false
+      - SkipDryRun=true
+      - ManualSync=false
+
+applications:
+  - name: shoplite-product-service-stage
+    enabled: true
+    namespace: shoplite-stage
+    syncWave: "1"
+    sources:
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        path: helm-charts/applications/helm-master-chart
+        helm:
+          releaseName: shoplite-product-service
+          valueFiles:
+            - $values/environments/stage/applications/shoplite/shoplite-product-service/values.yaml
+  - name: shoplite-order-service-stage
+    enabled: true
+    namespace: shoplite-stage
+    syncWave: "2"
+    sources:
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        path: helm-charts/applications/helm-master-chart
+        helm:
+          releaseName: shoplite-order-service
+          valueFiles:
+            - $values/environments/stage/applications/shoplite/shoplite-order-service/values.yaml
+  - name: shoplite-inventory-service-stage
+    enabled: true
+    namespace: shoplite-stage
+    syncWave: "2"
+    sources:
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        path: helm-charts/applications/helm-master-chart
+        helm:
+          releaseName: shoplite-inventory-service
+          valueFiles:
+            - $values/environments/stage/applications/shoplite/shoplite-inventory-service/values.yaml
+  - name: shoplite-notification-service-stage
+    enabled: true
+    namespace: shoplite-stage
+    syncWave: "3"
+    sources:
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        path: helm-charts/applications/helm-master-chart
+        helm:
+          releaseName: shoplite-notification-service
+          valueFiles:
+            - $values/environments/stage/applications/shoplite/shoplite-notification-service/values.yaml
+  - name: shoplite-frontend-stage
+    enabled: true
+    namespace: shoplite-stage
+    syncWave: "4"
+    sources:
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        path: helm-charts/applications/helm-master-chart
+        helm:
+          releaseName: shoplite-frontend
+          valueFiles:
+            - $values/environments/stage/applications/shoplite/shoplite-frontend/values.yaml

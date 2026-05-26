@@ -14,9 +14,9 @@ annotations:
 replicaCount: 1
 
 image:
-  repository: ghcr.io/shoplite-project/shoplite-inventory-service
-  tag: sandbox-latest
-  pullPolicy: Always
+  repository: shoplite-inventory-service
+  tag: sandbox-local
+  pullPolicy: IfNotPresent
 
 envFromConfigMaps:
   - shoplite-global-config

@@ -1,0 +1,23 @@
+global:
+  repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+  targetRevision: main
+  destinationServer: "https://kubernetes.default.svc"
+  argocdNamespace: argocd
+  project: shoplite-apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - ApplyOutOfSyncOnly=true
+
+applications:
+  - name: shoplite-stage-configmaps
+    enabled: true
+    namespace: shoplite-stage
+    syncWave: "0"
+    path: helm-charts/applications/configmaps/shoplite/shoplite-stage-cm
+    helm:
+      releaseName: shoplite-stage-configmaps

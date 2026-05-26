@@ -1,0 +1,11 @@
+kafka:
+  replicas: 3
+
+zookeeper:
+  replicas: 3
+
+entityOperator:
+  topicOperator:
+    enabled: true
+  userOperator:
+    enabled: true

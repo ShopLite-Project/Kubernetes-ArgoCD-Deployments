@@ -1,12 +1,12 @@
-name: shoplite-product-service
-namespace: shoplite-sandbox
+name: shoplite-frontend
+namespace: shoplite-stage
 
 labels:
-  app: shoplite-product-service
+  app: shoplite-frontend
   application: shoplite
-  team: backend
+  team: frontend
   app.kubernetes.io/part-of: shoplite
-  app.kubernetes.io/instance: sandbox
+  app.kubernetes.io/instance: stage
 
 annotations:
   reloader.stakater.com/auto: "true"
@@ -14,14 +14,14 @@ annotations:
 replicaCount: 1
 
 image:
-  repository: shoplite-product-service
-  tag: sandbox-local
-  pullPolicy: IfNotPresent
+  repository: ghcr.io/shoplite-project/shoplite-frontend-service
+  tag: stage-latest
+  pullPolicy: Always
 
 envFromConfigMaps:
   - shoplite-global-config
-  - shoplite-sandbox-config
-  - shoplite-product-service-config
+  - shoplite-stage-config
+  - shoplite-frontend-config
 
 containerPort: 3000
 
@@ -34,7 +34,7 @@ service:
 livenessProbe:
   enabled: true
   httpGet:
-    path: /health
+    path: /
     port: http
   initialDelaySeconds: 15
   periodSeconds: 20
@@ -45,7 +45,7 @@ livenessProbe:
 readinessProbe:
   enabled: true
   httpGet:
-    path: /health
+    path: /
     port: http
   initialDelaySeconds: 5
   periodSeconds: 10

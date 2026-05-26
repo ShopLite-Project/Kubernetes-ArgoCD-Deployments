@@ -1,12 +1,12 @@
-name: shoplite-product-service
-namespace: shoplite-sandbox
+name: shoplite-order-service
+namespace: shoplite-stage
 
 labels:
-  app: shoplite-product-service
+  app: shoplite-order-service
   application: shoplite
   team: backend
   app.kubernetes.io/part-of: shoplite
-  app.kubernetes.io/instance: sandbox
+  app.kubernetes.io/instance: stage
 
 annotations:
   reloader.stakater.com/auto: "true"
@@ -14,22 +14,22 @@ annotations:
 replicaCount: 1
 
 image:
-  repository: shoplite-product-service
-  tag: sandbox-local
-  pullPolicy: IfNotPresent
+  repository: ghcr.io/shoplite-project/shoplite-order-service
+  tag: stage-latest
+  pullPolicy: Always
 
 envFromConfigMaps:
   - shoplite-global-config
-  - shoplite-sandbox-config
-  - shoplite-product-service-config
+  - shoplite-stage-config
+  - shoplite-order-service-config
 
-containerPort: 3000
+containerPort: 3001
 
 service:
   enabled: true
   type: ClusterIP
   port: 80
-  targetPort: 3000
+  targetPort: 3001
 
 livenessProbe:
   enabled: true

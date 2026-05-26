@@ -1,6 +1,6 @@
 # ShopLite Sandbox Environment
 
-This sandbox environment deploys the ShopLite application services through ArgoCD and Helm.
+This sandbox environment is the local-first deployment lane for ShopLite on `kind` or `minikube`.
 
 ## Components
 
@@ -27,8 +27,20 @@ This sandbox environment deploys the ShopLite application services through ArgoC
 
 ## Image update path
 
-The product service CI/CD pipeline updates:
+Sandbox uses locally built images loaded into the cluster rather than GHCR. The application values expect:
 
-- `environments/sandbox/applications/shoplite/shoplite-product-service/values.yaml`
+- `shoplite-product-service:sandbox-local`
+- `shoplite-order-service:sandbox-local`
+- `shoplite-inventory-service:sandbox-local`
+- `shoplite-notification-service:sandbox-local`
+- `shoplite-frontend-service:sandbox-local`
 
-ArgoCD first applies the sandbox configmaps, then renders the Helm chart with the updated values files, and applies the result to the cluster.
+For `kind`, build the images locally and load them with `kind load docker-image`.
+
+ArgoCD first applies the sandbox configmaps, then renders the Helm chart with the local-first values files, and applies the result to the cluster.
+
+## Platform posture
+
+- ingress remains optional for the first local pass
+- `cert-manager`, `external-dns`, and `traefik` remain disabled in the sandbox platform app set
+- Kafka remains disabled until the direct HTTP workflow is stable

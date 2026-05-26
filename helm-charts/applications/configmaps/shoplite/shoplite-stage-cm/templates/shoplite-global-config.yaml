@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shoplite-global-config
+  namespace: shoplite-stage
+  labels:
+    {{- include "shoplite.labels" . | nindent 4 }}
+    scope: global
+data:
+  APP_NAME: "ShopLite"
+  APP_ENV: "stage"
+  LOG_LEVEL: "info"
+  OTEL_RESOURCE_ATTRIBUTES: "service.namespace=shoplite-stage,deployment.environment=stage"
+  TEAM: "platform-devops"

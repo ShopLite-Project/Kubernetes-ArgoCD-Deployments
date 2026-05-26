@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: shoplite-apps
+  namespace: argocd
+spec:
+  description: ShopLite application components for the stage environment
+  sourceRepos:
+    - "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+  destinations:
+    - namespace: shoplite-stage
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

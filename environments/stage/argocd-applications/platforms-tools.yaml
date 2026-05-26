@@ -14,8 +14,8 @@ global:
       - ApplyOutOfSyncOnly=true
 
 applications:
-  - name: cert-manager-sandbox
-    enabled: false
+  - name: cert-manager-stage
+    enabled: true
     namespace: cert-manager
     syncWave: "1"
     sources:
@@ -28,10 +28,10 @@ applications:
         helm:
           releaseName: cert-manager
           valueFiles:
-            - $values/environments/sandbox/platforms-tools/cert-manager/values.yaml
+            - $values/environments/stage/platforms-tools/cert-manager/values.yaml
 
-  - name: external-dns-sandbox
-    enabled: false
+  - name: external-dns-stage
+    enabled: true
     namespace: external-dns
     syncWave: "2"
     sources:
@@ -44,10 +44,10 @@ applications:
         helm:
           releaseName: external-dns
           valueFiles:
-            - $values/environments/sandbox/platforms-tools/external-dns/values.yaml
+            - $values/environments/stage/platforms-tools/external-dns/values.yaml
 
-  - name: traefik-sandbox
-    enabled: false
+  - name: traefik-stage
+    enabled: true
     namespace: traefik
     syncWave: "3"
     sources:
@@ -60,9 +60,9 @@ applications:
         helm:
           releaseName: traefik
           valueFiles:
-            - $values/environments/sandbox/platforms-tools/traefik/values.yaml
+            - $values/environments/stage/platforms-tools/traefik/values.yaml
 
-  - name: argocd-sandbox
+  - name: argocd-stage
     enabled: false
     namespace: argocd
     syncWave: "4"
@@ -76,9 +76,9 @@ applications:
         helm:
           releaseName: argocd
           valueFiles:
-            - $values/environments/sandbox/platforms-tools/argocd/values.yaml
+            - $values/environments/stage/platforms-tools/argocd/values.yaml
 
-  - name: kafka-operator-sandbox
+  - name: kafka-operator-stage
     enabled: false
     namespace: kafka
     syncWave: "5"
@@ -92,9 +92,9 @@ applications:
         helm:
           releaseName: strimzi-kafka-operator
           valueFiles:
-            - $values/environments/sandbox/platforms-tools/kafka-operator/values.yaml
+            - $values/environments/stage/platforms-tools/kafka-operator/values.yaml
 
-  - name: kafka-cluster-sandbox
+  - name: kafka-cluster-stage
     enabled: false
     namespace: kafka
     syncWave: "6"
@@ -102,4 +102,4 @@ applications:
     helm:
       releaseName: kafka-cluster
       valueFiles:
-        - environments/sandbox/platforms-tools/kafka-cluster/values.yaml
+        - environments/stage/platforms-tools/kafka-cluster/values.yaml

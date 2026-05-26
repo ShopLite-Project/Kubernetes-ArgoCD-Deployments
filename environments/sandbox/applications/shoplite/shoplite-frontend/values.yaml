@@ -14,9 +14,9 @@ annotations:
 replicaCount: 1
 
 image:
-  repository: ghcr.io/shoplite-project/shoplite-frontend-service
-  tag: sandbox-latest
-  pullPolicy: Always
+  repository: shoplite-frontend-service
+  tag: sandbox-local
+  pullPolicy: IfNotPresent
 
 envFromConfigMaps:
   - shoplite-global-config

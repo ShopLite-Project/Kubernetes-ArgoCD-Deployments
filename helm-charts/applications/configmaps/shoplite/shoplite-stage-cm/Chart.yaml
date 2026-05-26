@@ -1,0 +1,6 @@
+apiVersion: v2
+name: shoplite-stage-configmaps
+description: ConfigMaps for the ShopLite stage environment
+type: application
+version: 0.1.0
+appVersion: "1.0"

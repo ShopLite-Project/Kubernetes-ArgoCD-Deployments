@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shoplite-notification-service-config
+  namespace: shoplite-stage
+  labels:
+    {{- include "shoplite.labels" . | nindent 4 }}
+    component: notification-service
+data:
+  SERVICE_NAME: "shoplite-notification-service"
+  PORT: "3003"
+  NOTIFICATION_PROVIDER: "email"

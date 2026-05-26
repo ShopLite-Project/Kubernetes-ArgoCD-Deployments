@@ -1,0 +1,15 @@
+provider: aws
+
+policy: sync
+
+sources:
+  - service
+  - ingress
+
+txtOwnerId: shoplite-stage
+
+serviceAccount:
+  create: true
+
+domainFilters:
+  - stage.shoplite.local

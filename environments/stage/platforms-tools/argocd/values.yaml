@@ -1,0 +1,9 @@
+global:
+  domain: argocd.stage.shoplite.local
+
+server:
+  ingress:
+    enabled: true
+
+redis:
+  enabled: true

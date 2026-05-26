@@ -1,0 +1,24 @@
+deployment:
+  enabled: true
+  replicas: 2
+
+service:
+  enabled: true
+  type: LoadBalancer
+
+ingressClass:
+  enabled: true
+  isDefaultClass: true
+  name: traefik
+
+ports:
+  web:
+    expose:
+      default: true
+    exposedPort: 80
+  websecure:
+    expose:
+      default: true
+    exposedPort: 443
+    tls:
+      enabled: true
