@@ -6,7 +6,7 @@ metadata:
 spec:
   description: Core platform tools for the sandbox environment
   sourceRepos:
-    - "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+    - "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
     - "https://argoproj.github.io/argo-helm"
     - "https://charts.jetstack.io"
     - "https://kubernetes-sigs.github.io/external-dns"

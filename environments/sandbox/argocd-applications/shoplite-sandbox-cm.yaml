@@ -1,5 +1,5 @@
 global:
-  repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+  repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
   targetRevision: main
   destinationServer: "https://kubernetes.default.svc"
   argocdNamespace: argocd

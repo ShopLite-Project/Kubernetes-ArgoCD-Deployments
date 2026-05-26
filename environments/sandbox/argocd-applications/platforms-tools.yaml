@@ -1,5 +1,5 @@
 global:
-  repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+  repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
   targetRevision: main
   destinationServer: "https://kubernetes.default.svc"
   argocdNamespace: argocd
@@ -19,7 +19,7 @@ applications:
     namespace: cert-manager
     syncWave: "1"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
       - repoURL: "https://charts.jetstack.io"
@@ -35,7 +35,7 @@ applications:
     namespace: external-dns
     syncWave: "2"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
       - repoURL: "https://kubernetes-sigs.github.io/external-dns"
@@ -51,7 +51,7 @@ applications:
     namespace: traefik
     syncWave: "3"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
       - repoURL: "https://traefik.github.io/charts"
@@ -67,7 +67,7 @@ applications:
     namespace: argocd
     syncWave: "4"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
       - repoURL: "https://argoproj.github.io/argo-helm"
@@ -83,7 +83,7 @@ applications:
     namespace: kafka
     syncWave: "5"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
       - repoURL: "https://strimzi.io/charts/"

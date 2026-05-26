@@ -1,5 +1,5 @@
 global:
-  repoURL: "https://git.edusuc.net/WEBFORX/Plateng-deployment.git"
+  repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
   targetRevision: develop
   destinationServer: "https://kubernetes.default.svc"
   argocdNamespace: argocd

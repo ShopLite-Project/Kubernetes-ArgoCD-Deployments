@@ -1,5 +1,5 @@
 global:
-  repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+  repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
   targetRevision: main
   destinationServer: "https://kubernetes.default.svc"
   argocdNamespace: argocd
@@ -22,10 +22,10 @@ applications:
     namespace: shoplite-sandbox
     syncWave: "1"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         path: helm-charts/applications/helm-master-chart
         helm:
@@ -37,10 +37,10 @@ applications:
     namespace: shoplite-sandbox
     syncWave: "2"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         path: helm-charts/applications/helm-master-chart
         helm:
@@ -52,10 +52,10 @@ applications:
     namespace: shoplite-sandbox
     syncWave: "2"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         path: helm-charts/applications/helm-master-chart
         helm:
@@ -67,10 +67,10 @@ applications:
     namespace: shoplite-sandbox
     syncWave: "3"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         path: helm-charts/applications/helm-master-chart
         helm:
@@ -82,10 +82,10 @@ applications:
     namespace: shoplite-sandbox
     syncWave: "4"
     sources:
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         ref: values
-      - repoURL: "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
         path: helm-charts/applications/helm-master-chart
         helm:

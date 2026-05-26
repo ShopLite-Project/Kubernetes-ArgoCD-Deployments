@@ -1,0 +1,100 @@
+## Inspect (pods, deployments, node)
+
+kubectl get pods -n <ns>
+kubectl get pods -A -o wide
+kubectl get pods -n <ns> --show-labels
+kubectl get pods --field-selector status.phase=Failed -A
+kubectl get deployments -n <ns>
+kubectl get statefulsets -n <ns>
+kubectl get daemonsets -A
+kubectl get services -n <ns>
+kubectl get ingress -A
+kubectl get pvc -n <ns>
+kubectl get nodes
+kubectl get nodes -o wide --show-labels
+
+## Troubleshoot
+kubectl describe pod <pod> -n <ns>
+kubectl describe deployment <deploy> -n <ns>
+kubectl logs <pod> -n <ns> --tail 100
+kubectl logs <pod> -n <ns> -c <container> --previous
+kubectl get events -n <ns> --sort-by=.lastTimestamp
+kubectl top pods -n <ns> --sort-by=memory
+kubectl top nodes
+
+## Rollout scaling
+kubectl rollout status  deployment/<name> -n <ns>
+kubectl rollout history deployment/<name> -n <ns>
+kubectl rollout restart deployment/<name> -n <ns>
+kubectl rollout undo    deployment/<name> -n <ns>
+kubectl scale   deployment/<name> --replicas=3 -n <ns>
+kubectl delete  pod <pod> -n <ns>
+kubectl cordon   <node>
+kubectl uncordon <node>
+
+## ESO
+kubectl get externalsecret -n <ns>
+kubectl get externalsecret -A
+kubectl describe externalsecret <name> -n <ns>
+kubectl get secretstore -n <ns>
+kubectl get clustersecretstore
+kubectl describe clustersecretstore <name>
+kubectl get events -n <ns> --field-selector involvedObject.kind=ExternalSecret
+
+## ArgoCD
+kubectl get applications.argoproj.io -n argocd
+kubectl get applications.argoproj.io -A
+kubectl describe application <name> -n argocd
+kubectl get appprojects.argoproj.io -n argocd
+kubectl get applicationsets.argoproj.io -n argocd
+kubectl get events -n argocd --sort-by=.lastTimestamp
+
+## Cert-Manager
+kubectl get certificates -A
+kubectl describe certificate <name> -n <ns>
+kubectl get certificaterequests -n <ns>
+kubectl get orders -n <ns>
+kubectl get clusterissuers
+
+## Context (cluster switch)
+kubectl config current-context              # show active cluster in this channel
+kubectl config get-contexts                 # list clusters the bot can target
+kubectl config use-context <cluster>        # switch active cluster for this channel
+kubectl <cmd> --cluster <name>              # one-off override
+
+## Filter output(post-processing)
+kubectl get pods -A | grep <pattern>
+kubectl get pods -A | grep -v Running
+kubectl get pods -A | grep -i error
+
+## kind
+kind create cluster --name shoplite
+kind get clusters               # shows real active cluster
+kind-<clustername>
+kubectl config get-contexts     # shows ALL remembered clusters (even stale ones)
+kubectl config use-context kind-shoplite    # selects the one you actually use
+kubectl config delete-context <clustername>
+kubectl cluster-info --context kind-
+
+## Namespace
+kubectl create namespace <namespace-name>
+kubectl delete namespace <namespace-name>
+kubectl get namespaces
+kubectl get ns
+
+alias k='kubectl'
+alias kgp='kubectl get pods'
+alias kgs='kubectl get svc'
+alias kgn='kubectl get nodes'
+alias kaf='kubectl apply -f'
+alias kdf='kubectl delete -f'
+
+
+
+kubectl create namespace argocd
+kubectl create namespace shoplite-sandbox
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm upgrade --install argocd argo/argo-cd `
+    --namespace argocd `
+    -f .\Kubernetes-ArgoCD-Deployments\environments\sandbox\platforms-tools\argocd\values.yaml

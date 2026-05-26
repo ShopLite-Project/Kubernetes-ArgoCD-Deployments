@@ -7,7 +7,7 @@ projects: []
 #   - name: platform-tools
 #     description: Platform tools and infrastructure components
 #     sourceRepos:
-#       - "https://git.edusuc.net/WEBFORX/Plateng-deployment.git"
+#       - "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
 #     destinations:
 #       - namespace: '*'
 #         server: https://kubernetes.default.svc

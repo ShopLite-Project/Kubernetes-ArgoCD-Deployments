@@ -6,7 +6,7 @@ metadata:
 spec:
   description: ShopLite application components for the sandbox environment
   sourceRepos:
-    - "https://github.com/marjorieechu/k8s-ArgoCD-deployment-project.git"
+    - "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
   destinations:
     - namespace: shoplite-sandbox
       server: https://kubernetes.default.svc
