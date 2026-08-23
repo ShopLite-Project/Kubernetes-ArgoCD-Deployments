@@ -81,7 +81,7 @@ applications:
   - name: kafka-operator-stage
     enabled: false
     namespace: kafka
-    syncWave: "5"
+    syncWave: "6"
     sources:
       - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
         targetRevision: main
@@ -94,10 +94,26 @@ applications:
           valueFiles:
             - $values/environments/stage/platforms-tools/kafka-operator/values.yaml
 
+  - name: monitoring-stage
+    enabled: false
+    namespace: monitoring
+    syncWave: "5"
+    sources:
+      - repoURL: "https://github.com/ShopLite-Project/Kubernetes-ArgoCD-Deployments"
+        targetRevision: main
+        ref: values
+      - repoURL: "https://prometheus-community.github.io/helm-charts"
+        chart: kube-prometheus-stack
+        targetRevision: "72.6.2"
+        helm:
+          releaseName: monitoring
+          valueFiles:
+            - $values/environments/stage/platforms-tools/monitoring/values.yaml
+
   - name: kafka-cluster-stage
     enabled: false
     namespace: kafka
-    syncWave: "6"
+    syncWave: "7"
     path: helm-charts/platforms-tools/kafka-cluster
     helm:
       releaseName: kafka-cluster

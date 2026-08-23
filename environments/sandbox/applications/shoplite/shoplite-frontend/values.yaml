@@ -23,13 +23,13 @@ envFromConfigMaps:
   - shoplite-sandbox-config
   - shoplite-frontend-config
 
-containerPort: 3000
+containerPort: 80
 
 service:
   enabled: true
   type: ClusterIP
   port: 80
-  targetPort: 3000
+  targetPort: 80
 
 livenessProbe:
   enabled: true

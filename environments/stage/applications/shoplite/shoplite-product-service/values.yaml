@@ -69,3 +69,9 @@ serviceAccount:
 
 ingress:
   enabled: false
+
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  path: /metrics
+  port: http

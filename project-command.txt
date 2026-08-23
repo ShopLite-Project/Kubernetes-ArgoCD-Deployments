@@ -1,0 +1,18 @@
+ helm upgrade --install argocd argo/argo-cd \
+    --namespace argocd \
+    --create-namespace \
+    -f values.yaml
+
+kubectl port-forward service/argocd-server -n argocd 8080:443
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+kubectl apply -f environments/sandbox/argocd-project/projects.yaml
+
+helm template shoplite-sandbox-cm helm-charts/platforms-tools/argocd-application \
+    -f environments/sandbox/argocd-applications/shoplite-sandbox-cm.yaml | kubectl apply -f -
+helm template shoplite-sandbox helm-charts/platforms-tools/argocd-application \
+    -f environments/sandbox/argocd-applications/shoplite-sandbox.yaml | kubectl apply -f -
+
+kubectl get appprojects -n argocd
+kubectl get applications -n argocd
